@@ -1,0 +1,102 @@
+@isTest
+private class ProductApiPostTest {
+    @isTest
+    static void testCreateProduct() {
+        // Create test data
+        String project_id = 'TEST001';
+        String project = 'Test Project';
+        String project_description = 'This is a test project';
+        String unit = 'Test Unit';
+        String country_iso2 = 'EUR';
+        String country = 'United States';
+        String project_kind = 'Test Kind';
+        String project_type = 'Test Type';
+        String standard_type = 'Test Standard';
+        String category = 'Test Category';
+        
+        // Create a standard pricebook
+        Pricebook2 standardPricebook = new Pricebook2(
+            Name = 'Standard Pricebook',
+            IsActive = true
+        );
+        insert standardPricebook;
+        System.debug('Matias standard standardPricebook: '+standardPricebook.Id);
+
+        
+                // Create a standard price
+        Product2 standardProduct = new Product2(
+            Name = 'Standard Product',
+            ProductCode = 'STD001',
+            CurrencyIsoCode = 'EUR',
+            QuantityUnitOfMeasure = 'Standard Unit',
+            Family = 'Standard Family',
+            IsActive = true
+        );
+        insert standardProduct;
+        System.debug('Matias standard product: '+standardProduct.Id);
+        List<Pricebook2> standardPricebook_aux = [SELECT Id FROM Pricebook2 WHERE name = 'Standard Pricebook' LIMIT 1];
+       // List<Pricebook2> standardPricebook_aux = [SELECT Id FROM Pricebook2 WHERE IsStandard = true LIMIT 1];
+       // System.debug('Matias standard product: '+standardPricebook_aux.Id);
+        System.debug('Matias standard standardPricebook_aux'+standardPricebook_aux[0].Id);
+
+        
+                    //        Pricebook2 standardPricebook = [SELECT Id FROM Pricebook2 WHERE name = 'Standard Pricebook' LIMIT 1];
+                    //        
+                    //        
+              //      PricebookEntry newPricebookEntry = new PricebookEntry();
+              //      newPricebookEntry.Product2Id = standardProduct.Id;
+              //      newPricebookEntry.Pricebook2Id = standardPricebook_aux[0].Id;
+              //      newPricebookEntry.UnitPrice = 1.00; // Set the standard price
+              //      newPricebookEntry.CurrencyIsoCode = 'EUR';
+              //      newPricebookEntry.IsActive = true;
+//                    insert newPricebookEntry;
+        
+        System.debug('Matias Llego aca?: ');
+
+        // Create a pricebook entry for the standard pricebook and product
+   //     PricebookEntry standardPricebookEntry = new PricebookEntry(
+   //         Pricebook2Id = standardPricebook.Id,
+   //         Product2Id = standardProduct.Id,
+   //         UnitPrice = 1.00,
+   //         CurrencyIsoCode = 'EUR',
+   //         IsActive = true
+   //     );
+   //     insert standardPricebookEntry;
+
+        // Call the API method
+        Test.startTest();
+        String result = ProductApiPost.createProduct(
+            project_id, project, project_description, unit, country_iso2, country, project_kind, project_type, standard_type, category
+        );
+        
+            result = ProductApiPost.createProduct(
+            project_id, project, project_description, unit, country_iso2, country, project_kind, project_type, standard_type, category
+        );
+        
+        Test.stopTest();
+
+        // Parse the JSON response
+        Map<String, Object> response = (Map<String, Object>) JSON.deserializeUntyped(result);
+
+        // Assert the expected values
+        System.assertEquals(200, response.get('status'));
+        
+        
+       // System.assertEquals(project, response.get('project'));
+       // System.assertEquals('created', response.get('action'));
+      //  System.assertEquals('Product ' + project_id + ' created successfully', response.get('message'));
+
+        // Verify the created product
+     //   Product2 createdProduct = [
+     //       SELECT Id, Name, Description, QuantityUnitOfMeasure, Family
+     //       FROM Product2
+     //       WHERE ProductCode = :project_id
+     //       LIMIT 1
+     //   ];
+     //   System.assertEquals(project, createdProduct.Name);
+     //   System.assertEquals(project_description, createdProduct.Description);
+     //   System.assertEquals(unit, createdProduct.QuantityUnitOfMeasure);
+     //   System.assertEquals(project_kind, createdProduct.Family);
+        // Add additional assertions for other fields if necessary
+    }
+}

@@ -1,0 +1,101 @@
+@isTest
+Public class LeadApiPostTest{
+static testMethod void testDoPost(){
+            
+        Test.startTest();
+        String emailResult = LeadApiPost.createTaskForLead('FirstName', 'lastName', 'matamicen@gmail.com', 'subject',  'phone', 'message', 'offset', 'company', 'Marketing', 'Small', 'MX', '0129W0000004IR2','0059W000000JFD0QAO','PR Promo', 'buenos aires', false, '');
+        System.debug(emailResult);
+        String emailResult2 = LeadApiPost.createTaskForLead('FirstName', 'lastName', 'matamicen@gmail.com', 'subject',  'phone', 'message', 'offset', 'company', 'Marketing', 'Small', 'MX', '0129W0000004IR2','0059W000000JFD0QAO','PR Promo', 'buenos aires', false, '');
+        System.debug(emailResult2);
+        String emailResult3 = LeadApiPost.createTaskForLead('FirstName', 'lastName', 'matamicen@gmail.com', 'subject',  'phone', 'message', 'offset', 'company', 'Marketing', 'Person', 'MX', '0129W0000004IR2','0059W000000JFD0QAO','PR Promo', 'buenos aires', false, '');
+        System.debug(emailResult3);
+        String emailResult31 = LeadApiPost.createTaskForLead('FirstName', 'lastName', 'matamicen@gmail.com', 'subject',  'phone', 'message', 'Sign up Form', 'company', 'Marketing', 'Person', 'MX', '0129W0000004IR2','0059W000000JFD0QAO','PR Promo', 'buenos aires', false, '');
+        System.debug(emailResult31);
+        String emailResult32 = LeadApiPost.createTaskForLead('FirstName', 'lastName', 'matamicen40@gmail.com', 'subject',  'phone', 'message', 'Sign up Form', 'company', 'Sign up Form', 'Small', 'MX', '0129W0000004IR2','0059W000000JFD0QAO','PR Promo', 'buenos aires', false, '');
+        System.debug(emailResult32);
+    
+    
+            // Check if lead creation was successful
+  //      if (emailResult3 != null && emailResult3.startsWith('Lead created successfully')) {
+            // Extract lead ID from the result
+            String leadId = emailResult3.substringAfter('Lead ID: ');
+            
+                              // Create a new Account
+                  Account newAccount = new Account();
+                  newAccount.Name = 'company';
+                  List<RecordType> recordTypeB2B = [SELECT Id FROM RecordType WHERE SObjectType = 'Account' AND DeveloperName = 'B2B' LIMIT 1];
+                  newAccount.RecordTypeId = recordTypeB2B[0].Id;
+                  insert newAccount;
+
+                // Create a new Contact
+                  Contact newContact = new Contact();
+                  newContact.FirstName = 'firstName';
+                  newContact.LastName = 'lastName';
+                  newContact.Email = 'matamicen80@gmail.com';
+                  newContact.AccountId = newAccount.Id; // Assign the newly created Account to the Contact
+                  insert newContact;
+            
+            // Create opportunity record
+            Opportunity opp = new Opportunity();
+            opp.Name = 'New Opportunity';
+            //opp.StageName = 'Prospecting';
+            opp.StageName = 'Sales Proposal';
+            opp.CloseDate = Date.today().addDays(30);
+            opp.AccountId = newAccount.Id;
+        opp.Payment_status__c = 'Done'; // Set the value of the Payment_status__c field
+        opp.N_of_tons__c = 5;
+        opp.Price_per_unit__c = 5;
+        opp.CurrencyIsoCode = 'EUR';
+        opp.When_will_the_renovation_take_place__c = 'In 1 Year';
+    opp.Cost_price__c = 5;
+    opp.Net_revenuew__c = 5;
+    opp.Proposal_file__c = 'https://www.cnn.com/pepe.pdf';
+        //opp.OwnerId = Gregg_Owner; // Assign to Greggory Mannix
+           // opp.Lead__c = leadId; // Set the lead ID as the related lead
+            // = leadId; // Set the lead ID as the related lead
+            
+            // Insert the opportunity
+            insert opp;
+            
+            System.debug('Opportunity created successfully with ID: ' + opp.Id);
+ //       } else {
+ //           System.debug('Failed to create lead. Cannot create opportunity.');
+  //      }
+    
+            String emailResult30 = LeadApiPost.createTaskForLead('FirstName', 'lastName', 'matamicen80@gmail.com', 'subject',  'phone', 'message', 'offset', 'company', 'Marketing', 'Person', 'MX', '0129W0000004IR2','0059W000000JFD0QAO','PR Promo', 'buenos aires', false, '');
+        System.debug(emailResult30);
+    
+    
+    
+    // create the individual account for the persons 
+        Account acc = new Account();
+		acc.Name = 'individuals';
+
+		insert acc;
+    
+        String emailResult4 = LeadApiPost.createTaskForLead('FirstName', 'lastName', 'matamicen2@gmail.com', 'subject',  'phone', 'message', 'offset', 'company', 'Marketing', 'Person', 'MX', '0129W0000004IR2','0059W000000JFD0QAO','PR Promo', 'buenos aires', false, '');
+        System.debug(emailResult4);
+        String emailResult5 = LeadApiPost.createTaskForLead('FirstName', 'lastName', 'matamicen2@gmail.com', 'subject',  'phone', 'message', 'offset', 'company', 'Marketing', 'Person', 'MX', '0129W0000004IR2','0059W000000JFD0QAO','PR Promo', 'buenos aires', false, '');
+        System.debug(emailResult5);
+    
+        // make fail try/catch
+        String emailResult6 = LeadApiPost.createTaskForLead('FirstName', 'lastName', 'matamicen3@gmail.com', 'subject',  'phone', 'message', 'offset', 'company', 'Marketing444', 'Small', 'MX', '0129W0000004IR5','0059W000000JFD0QA1','PR Promo', 'buenos aires', false, '');
+        System.debug(emailResult6);
+    
+        // newsletter
+        String emailResult7 = LeadApiPost.createTaskForLead('FirstName', 'lastName', 'matamicen4@gmail.com', 'subject',  'phone', 'message', 'offset', 'company', 'Marketing444', 'Small', 'MX', '0129W0000004IR5','0059W000000JFD0QA1','PR Promo', 'buenos aires', true, '');
+        System.debug(emailResult7);
+    
+        // newsletter repetead
+        String emailResult8 = LeadApiPost.createTaskForLead('FirstName', 'lastName', 'matamicen4@gmail.com', 'subject',  'phone', 'message', 'offset', 'company', 'Marketing444', 'Small', 'MX', '0129W0000004IR5','0059W000000JFD0QA1','PR Promo', 'buenos aires', true, 'es');
+        System.debug(emailResult8);
+    
+        Map<String, Object> emailMap = (Map<String, Object>) JSON.deserializeUntyped(emailResult);
+        System.assertEquals('matamicen@gmail.com', emailMap.get('email'));
+       // System.assertEquals('matamicen@gmail.com', emailResult);
+        Test.stopTest();
+        
+
+    }   
+    
+  }
