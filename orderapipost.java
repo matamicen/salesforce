@@ -136,7 +136,7 @@ global with sharing class OrderApiPost {
     			Integer orderCount = (Integer)groupedResults[0].get('countorders');
 
     			// Update the TotalAmount__c and TotalOrders__c fields of the given accountId
-    			Account accountToUpdate = new Account(Id = acc.Id, TotalAmount__c = totalAmount, TotalOrders__c = orderCount);
+    			Account accountToUpdate = new Account(Id = acc.Id, TotalAmount__c = totalAmount, TotalOrders__c = orderCount, 	last_purchase__c = purchase_datetime.date());
     			update accountToUpdate;
             
         }
@@ -162,6 +162,7 @@ global with sharing class OrderApiPost {
                 // Update the TotalAmount__c and TotalOrders__c fields of the Contact record
                 contactToUpdate.TotalAmount__c = totalAmount;
                 contactToUpdate.TotalOrders__c = orderCount;
+                contactToUpdate.last_purchase__c = purchase_datetime.date();
                 update contactToUpdate;
             
         }
@@ -189,7 +190,13 @@ global with sharing class OrderApiPost {
                         theOwner = opportunities[0].OwnerId;   
                      }
                        
-                     
+                        // Retrieve the Opportunity ID
+                        String opportunityId = opportunities[0].Id;
+                        System.debug('Opportunity ID:'+ opportunityId);
+                        String salesforceBaseUrl = URL.getSalesforceBaseUrl().toExternalForm();
+                        System.debug('Salesforce Base URL: ' + salesforceBaseUrl);
+                        String urlOpportunity = salesforceBaseUrl + '/lightning/r/Opportunity/'+ opportunityId + '/view';
+                    
                     Task newTask = new Task();
                     newTask.Subject = 'A new purchase was made by '+ email;
                     // newTask.WhoId = opportunities[0].Id;
@@ -198,16 +205,17 @@ global with sharing class OrderApiPost {
                     newTask.OwnerId = theOwner;
 
                    // 
-                    newTask.Description = 'Task created via Order API (Opportunity)';
+                    //newTask.Description = 'Task created via Order API (Opportunity)';
+                    newTask.Description = 'click to see the opportunity: ' + urlOpportunity;
                     
                     insert newTask;
                     
                         // Retrieve the Opportunity ID
-                        String opportunityId = opportunities[0].Id;
-                        System.debug('Opportunity ID:'+ opportunityId);
-                        String salesforceBaseUrl = URL.getSalesforceBaseUrl().toExternalForm();
-                        System.debug('Salesforce Base URL: ' + salesforceBaseUrl);
-                        String urlOpportunity = salesforceBaseUrl + '/lightning/r/Opportunity/'+ opportunityId + '/view';
+                      //  String opportunityId = opportunities[0].Id;
+                      //  System.debug('Opportunity ID:'+ opportunityId);
+                      //  String salesforceBaseUrl = URL.getSalesforceBaseUrl().toExternalForm();
+                      //  System.debug('Salesforce Base URL: ' + salesforceBaseUrl);
+                      //  String urlOpportunity = salesforceBaseUrl + '/lightning/r/Opportunity/'+ opportunityId + '/view';
 
                         // Send an email notification to the OwnerId
                         Messaging.SingleEmailMessage emailMessage = new Messaging.SingleEmailMessage();
@@ -269,13 +277,18 @@ global with sharing class OrderApiPost {
                     {
                         theOwner = leads[0].OwnerId;   
                      }
- 
+                   
+                   
+                        String salesforceBaseUrl = URL.getSalesforceBaseUrl().toExternalForm();
+                        System.debug('Salesforce Base URL: ' + salesforceBaseUrl);
+                        String urlLead = salesforceBaseUrl + '/lightning/r/Lead/'+ leadId + '/view';
             
             // Create a new Task associated with the converted Opportunity
             Task newTask = new Task();
             newTask.Subject = 'Lead => New purchase was made by '+ email;
             newTask.WhoId = leadId;
-            newTask.OwnerId =  theOwner;      
+            newTask.OwnerId =  theOwner;  
+            newTask.Description = 'click to see the lead: ' + urlLead;
          
             
             // Insert the Task record
@@ -283,9 +296,9 @@ global with sharing class OrderApiPost {
                 insert newTask;
                 System.debug('New Task ID: ' + newTask.Id);
                 
-                        String salesforceBaseUrl = URL.getSalesforceBaseUrl().toExternalForm();
-                        System.debug('Salesforce Base URL: ' + salesforceBaseUrl);
-                        String urlLead = salesforceBaseUrl + '/lightning/r/Lead/'+ leadId + '/view';
+                      //  String salesforceBaseUrl = URL.getSalesforceBaseUrl().toExternalForm();
+                     //   System.debug('Salesforce Base URL: ' + salesforceBaseUrl);
+                      //  String urlLead = salesforceBaseUrl + '/lightning/r/Lead/'+ leadId + '/view';
 
                         // Send an email notification to the OwnerId
                         Messaging.SingleEmailMessage emailMessage = new Messaging.SingleEmailMessage();
@@ -364,6 +377,12 @@ global with sharing class OrderApiPost {
             insert newOpportunity;
             System.debug('New Opportunity ID: ' + newOpportunity.Id);
             
+                        // Retrieve the Opportunity ID
+                        //String opportunityId = opportunities[0].Id;
+                        System.debug('Opportunity ID:'+ newOpportunity.Id);
+                        String salesforceBaseUrl = URL.getSalesforceBaseUrl().toExternalForm();
+                        System.debug('Salesforce Base URL: ' + salesforceBaseUrl);
+                        String urlOpportunity = salesforceBaseUrl + '/lightning/r/Opportunity/'+ newOpportunity.Id + '/view';
             
                     // Create a new Task for the Opportunity only for B2B customers
                     Task newTask = new Task();
@@ -371,16 +390,18 @@ global with sharing class OrderApiPost {
                     // newTask.WhoId = opportunities[0].Id;
                     newTask.WhatId = newOpportunity.Id;
                     newTask.OwnerId = newOpportunity.OwnerId;
-                    newTask.Description = 'Task created via Order API (Opportunity)';
-                    
+            
+                    //newTask.Description = 'Task created via Order API (Opportunity)';
+                    newTask.Description = 'A new won/close opportunity was created.' + '\nclick to see the opportunity: ' +urlOpportunity;
+            
                     insert newTask;
                     
                         // Retrieve the Opportunity ID
                         //String opportunityId = opportunities[0].Id;
-                        System.debug('Opportunity ID:'+ newOpportunity.Id);
-                        String salesforceBaseUrl = URL.getSalesforceBaseUrl().toExternalForm();
-                        System.debug('Salesforce Base URL: ' + salesforceBaseUrl);
-                        String urlOpportunity = salesforceBaseUrl + '/lightning/r/Opportunity/'+ newOpportunity.Id + '/view';
+                        // System.debug('Opportunity ID:'+ newOpportunity.Id);
+                        //String salesforceBaseUrl = URL.getSalesforceBaseUrl().toExternalForm();
+                       // System.debug('Salesforce Base URL: ' + salesforceBaseUrl);
+                       // String urlOpportunity = salesforceBaseUrl + '/lightning/r/Opportunity/'+ newOpportunity.Id + '/view';
 
                         // Send an email notification to the OwnerId
                         Messaging.SingleEmailMessage emailMessage = new Messaging.SingleEmailMessage();
